@@ -219,6 +219,10 @@
         newSlot.el.classList.remove("transitioning");
         const oldVideo = oldSlot.el.querySelector("video");
         if (oldVideo) oldVideo.pause();
+        // Only safe to overwrite oldSlot's content now that it's parked
+        // off-screen again — doing this earlier, while it's still visibly
+        // animating out, causes the upcoming item to flash through mid-transition.
+        this.preloadNext();
       };
       oldSlot.el.addEventListener("transitionend", cleanup, { once: true });
 
@@ -249,7 +253,6 @@
       } else {
         this.scheduleAdvance(newEl, newItem);
       }
-      this.preloadNext();
     }
   }
 
