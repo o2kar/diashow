@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Neue Slideshow{% endblock %}
+{% block content %}
+<h1>Neue Slideshow</h1>
+<form method="post" action="{{ url_for('admin.create_slideshow') }}" class="form">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label for="name">Name</label>
+  <input type="text" id="name" name="name" required autofocus>
+
+  <label for="image_duration_seconds">Bilddauer (Sekunden)</label>
+  <input type="number" id="image_duration_seconds" name="image_duration_seconds" min="1" value="{{ default_duration }}">
+
+  <button type="submit">Erstellen</button>
+</form>
+{% endblock %}

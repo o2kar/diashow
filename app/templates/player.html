@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Slideshow</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/player.css') }}">
+</head>
+<body>
+  <div id="stage">
+    <div class="slot" id="slotA"></div>
+    <div class="slot" id="slotB"></div>
+    <div id="placeholder" class="placeholder" hidden>Keine Medien konfiguriert.</div>
+  </div>
+  <script>
+    window.SLIDESHOW_SLUG = {{ slug|tojson }};
+  </script>
+  <script src="{{ url_for('static', filename='js/player.js') }}"></script>
+</body>
+</html>

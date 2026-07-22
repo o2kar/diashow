@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Slideshows{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Slideshows</h1>
+  <a class="button" href="{{ url_for('admin.new_slideshow_form') }}">+ Neue Slideshow</a>
+</div>
+
+{% if slideshows %}
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Medien</th>
+      <th>Bilddauer</th>
+      <th>Öffentliche URL</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for s in slideshows %}
+    <tr>
+      <td><a href="{{ url_for('admin.edit_slideshow', slug=s.slug) }}">{{ s.name }}</a></td>
+      <td>{{ s.media|length }}</td>
+      <td>{{ s.image_duration_seconds }}s</td>
+      <td>
+        <input type="text" readonly value="{{ url_for('player.show_player', slug=s.slug, _external=True) }}"
+               class="url-field" onclick="this.select()">
+        <button type="button" class="copy-btn" data-copy-target="prev">Kopieren</button>
+      </td>
+      <td>
+        <form action="{{ url_for('admin.delete_slideshow', slug=s.slug) }}" method="post"
+              onsubmit="return confirm('Slideshow „{{ s.name }}“ wirklich löschen?');">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="danger">Löschen</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>Noch keine Slideshows vorhanden.</p>
+{% endif %}
+{% endblock %}

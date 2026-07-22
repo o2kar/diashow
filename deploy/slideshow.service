@@ -1,0 +1,15 @@
+[Unit]
+Description=Diashow Slideshow Webapp
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/opt/diashow
+EnvironmentFile=/opt/diashow/.env
+ExecStart=/opt/diashow/venv/bin/waitress-serve --host=0.0.0.0 --port=8000 --threads=8 wsgi:app
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

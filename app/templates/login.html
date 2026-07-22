@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Anmelden{% endblock %}
+{% block content %}
+<div class="login-box">
+  <h1>Anmelden</h1>
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label for="password">Passwort</label>
+    <input type="password" id="password" name="password" autofocus required>
+    <button type="submit">Anmelden</button>
+  </form>
+</div>
+{% endblock %}

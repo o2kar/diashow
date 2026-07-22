@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}{{ slideshow.name }} bearbeiten{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>{{ slideshow.name }}</h1>
+  <a href="{{ url_for('admin.dashboard') }}">&larr; Zurück</a>
+</div>
+
+<section class="panel">
+  <h2>Einstellungen</h2>
+  <form method="post" action="{{ url_for('admin.update_slideshow', slug=slideshow.slug) }}" class="form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label for="name">Name</label>
+    <input type="text" id="name" name="name" value="{{ slideshow.name }}" required>
+
+    <label for="image_duration_seconds">Bilddauer (Sekunden)</label>
+    <input type="number" id="image_duration_seconds" name="image_duration_seconds" min="1"
+           value="{{ slideshow.image_duration_seconds }}">
+
+    <button type="submit">Speichern</button>
+  </form>
+
+  <div class="url-row">
+    <label>Öffentliche URL für diese Slideshow (im Kiosk-Browser aufrufen)</label>
+    <div>
+      <input type="text" readonly value="{{ player_url }}" class="url-field" id="player-url" onclick="this.select()">
+      <button type="button" class="copy-btn" data-copy-target="#player-url">Kopieren</button>
+    </div>
+  </div>
+</section>
+
+<section class="panel">
+  <h2>Medien hochladen</h2>
+  <form method="post" action="{{ url_for('admin.upload_media', slug=slideshow.slug) }}"
+        enctype="multipart/form-data" class="form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="file" name="files" multiple accept=".png,.jpg,.jpeg,.mp4">
+    <button type="submit">Hochladen</button>
+  </form>
+</section>
+
+<section class="panel">
+  <h2>Reihenfolge ({{ slideshow.media|length }} Medien)</h2>
+  <p class="hint">Ziehen zum Neusortieren.</p>
+  <ul class="media-list" id="media-list" data-slug="{{ slideshow.slug }}">
+    {% for m in slideshow.media %}
+    <li draggable="true" data-id="{{ m.id }}" class="media-item">
+      <span class="drag-handle">&#9776;</span>
+      {% if m.type == 'image' %}
+        <img src="{{ url_for('player.media_file', slug=slideshow.slug, filename=m.filename) }}" alt="">
+      {% else %}
+        <div class="video-badge">VIDEO</div>
+      {% endif %}
+      <span class="media-name">{{ m.original_name }}</span>
+      <form method="post"
+            action="{{ url_for('admin.delete_media', slug=slideshow.slug, media_id=m.id) }}"
+            onsubmit="return confirm('Datei löschen?');">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="danger small">Löschen</button>
+      </form>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+
+<section class="panel">
+  <form action="{{ url_for('admin.delete_slideshow', slug=slideshow.slug) }}" method="post"
+        onsubmit="return confirm('Slideshow „{{ slideshow.name }}“ inklusive aller Medien wirklich löschen?');">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button type="submit" class="danger">Slideshow löschen</button>
+  </form>
+</section>
+
+{% endblock %}
+{% block head %}
+<script src="{{ url_for('static', filename='js/admin.js') }}" defer></script>
+{% endblock %}
